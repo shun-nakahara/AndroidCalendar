@@ -2,6 +2,7 @@ package shun.nakahara.androidcalendar.util;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.Date;
 
@@ -35,6 +36,7 @@ public class CalendarRealm {
      * @param context {@link Context}
      * @return {@link Realm}
      */
+    @NonNull
     public static Realm getRealm(@NonNull Context context) {
         RealmConfiguration.Builder builder = new RealmConfiguration.Builder(context);
         builder.name(CALENDAR_REALM_NAME);
@@ -84,6 +86,7 @@ public class CalendarRealm {
      * @param date {@link Date} 取得したいメモの日付
      * @return {@link CalendarMemo}
      */
+    @Nullable
     public static CalendarMemo getCalendarMemo(@NonNull Realm realm, @NonNull Date date) {
         RealmQuery<CalendarMemo> memoRealmQuery = realm.where(CalendarMemo.class);
         memoRealmQuery.equalTo("date", date);

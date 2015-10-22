@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".EditFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -10,18 +10,20 @@
         android:layout_gravity="center"
         android:orientation="vertical">
 
-        <com.prolificinteractive.materialcalendarview.MaterialCalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/calendarView"
+        <TextView
+            android:id="@+id/dateTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:mcv_selectionColor="#06B"
-            app:mcv_showOtherDates="all" />
+            android:layout_gravity="center_horizontal|top"
+            android:text=""
+            android:textSize="@dimen/text_view_text_size" />
 
-        <TextView
-            android:id="@+id/textView"
+        <EditText
+            android:id="@+id/memoEditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="bottom|center_horizontal"
-            android:text="" />
+            android:layout_gravity="center_horizontal|bottom"
+            android:ems="10"
+            android:inputType="textMultiLine" />
     </LinearLayout>
 </FrameLayout>
