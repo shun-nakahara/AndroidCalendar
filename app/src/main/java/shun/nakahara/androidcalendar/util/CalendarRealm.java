@@ -14,9 +14,8 @@ import shun.nakahara.androidcalendar.model.CalendarMemo;
 /**
  * Realm で Calendar の日付に対して書き込んだメモを保存するための仲介クラス
  *
- * @see {@link CalendarMemo}
- *
  * @author shun_nakahara
+ * @see {@link CalendarMemo}
  */
 public class CalendarRealm {
 
@@ -49,10 +48,10 @@ public class CalendarRealm {
      * Save Calendar Memo with date
      *
      * @param realm {@link Realm}
-     * @param date {@link Date}
-     * @param memo {@link String}
+     * @param date  {@link Date}
+     * @param memo  {@link String}
      */
-    public static void saveCalendarMemo(@NonNull Realm realm, @NonNull final Date date, @NonNull final String memo) {
+    private static void saveCalendarMemo(@NonNull Realm realm, @NonNull final Date date, @NonNull final String memo) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -66,11 +65,11 @@ public class CalendarRealm {
     /**
      * Update Calendar Memo
      *
-     * @param realm {@link Realm}
+     * @param realm        {@link Realm}
      * @param calendarMemo {@link CalendarMemo}
-     * @param memo {@link String}
+     * @param memo         {@link String}
      */
-    public static void editCalendarMemo(@NonNull Realm realm, final CalendarMemo calendarMemo, final String memo) {
+    private static void editCalendarMemo(@NonNull Realm realm, @NonNull final CalendarMemo calendarMemo, @NonNull final String memo) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -80,10 +79,26 @@ public class CalendarRealm {
     }
 
     /**
+     * Delete Calendar Memo
+     *
+     * @param realm        {@link Realm}
+     * @param calendarMemo {@link CalendarMemo}
+     */
+    public static void deleteCalendarMemo(@NonNull Realm realm, @NonNull final CalendarMemo calendarMemo) {
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                calendarMemo.removeFromRealm();
+            }
+        });
+
+    }
+
+    /**
      * Get Calendar Memo Model
      *
      * @param realm {@link Realm}
-     * @param date {@link Date} 取得したいメモの日付
+     * @param date  {@link Date} 取得したいメモの日付
      * @return {@link CalendarMemo}
      */
     @Nullable
