@@ -1,4 +1,4 @@
-package shun.nakahara.androidcalendar;
+package shun.nakahara.androidcalendar.calendar.fragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,11 +22,16 @@ import com.prolificinteractive.materialcalendarview.OnMonthChangedListener;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.realm.Realm;
+import shun.nakahara.androidcalendar.CalendarApplication;
+import shun.nakahara.androidcalendar.R;
 import shun.nakahara.androidcalendar.model.CalendarMemo;
+import shun.nakahara.androidcalendar.util.CalendarRealm;
 
 
 /**
  * Calendar Fragment
+ * <p>
+ * カレンダー画面のロジックを実装してあります。
  *
  * @author shun_nakahara
  * @version 1.0
@@ -44,7 +49,6 @@ public class CalendarFragment extends Fragment implements OnDateSelectedListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         this.realm = CalendarRealm.getRealm(getContext());
     }
 
@@ -65,13 +69,16 @@ public class CalendarFragment extends Fragment implements OnDateSelectedListener
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, getActivity());
 
+        // Setting Material Calendar
         this.materialCalendarView.setOnDateChangedListener(this);
         this.materialCalendarView.setOnMonthChangedListener(this);
         this.materialCalendarView.setDateSelected(CalendarDay.today(), true);
 
+        // Setting Edit Text
         this.editText.setOnEditorActionListener(this);
         this.editText.setOnTouchListener(this);
 
+        // Setting Default Edit Text Memo
         CalendarMemo calendarMemo = CalendarRealm.getCalendarMemo(realm, CalendarDay.today().getDate());
         if (calendarMemo != null) {
             this.editText.setText(calendarMemo.getMemo());
@@ -91,12 +98,13 @@ public class CalendarFragment extends Fragment implements OnDateSelectedListener
         CalendarApplication.watch(this);
     }
 
-    //region Material Calendar
+    //region material calendar
     @Override
     public void onDateSelected(MaterialCalendarView widget, CalendarDay date, boolean selected) {
-
         this.editText.setFocusable(false);
+
         closedKeyboard(getActivity(), widget);
+
 
         CalendarMemo calendarMemo = CalendarRealm.getCalendarMemo(realm, date.getDate());
         if (calendarMemo == null) {
@@ -110,33 +118,43 @@ public class CalendarFragment extends Fragment implements OnDateSelectedListener
     public void onMonthChanged(MaterialCalendarView widget, CalendarDay date) {
         editText.setText("");
 
+        // 今日の日付がある月にきたらポインターとメモをセットする
         CalendarDay today = CalendarDay.today();
-        if (date.getYear() == today.getYear() && date.getMonth() == today.getMonth()) {
-            CalendarMemo calendarMemo = CalendarRealm.getCalendarMemo(realm, CalendarDay.today().getDate());
-            if (calendarMemo != null) {
-                this.editText.setText(calendarMemo.getMemo());
-            }
-            this.materialCalendarView.setDateSelected(CalendarDay.today(), true);
+        if (date.getYear() != today.getYear() || date.getMonth() != today.getMonth()) {
+            return;
         }
 
-    }
+        // Setting Memo
+        CalendarMemo calendarMemo = CalendarRealm.getCalendarMemo(realm, today.getDate());
+        if (calendarMemo != null) {
+            this.editText.setText(calendarMemo.getMemo());
+        }
 
+        // Setting Date Select
+        this.materialCalendarView.setDateSelected(today, true);
+    }
     //endregion
 
-    //region Edit Text
+
+    /**
+     * 今表示されているキーボードを消す処理
+     *
+     * @param activity {@link Activity} 現在表示している Activity
+     * @param view     {@link View} キーボードが表示されているView
+     */
+    private static void closedKeyboard(@NonNull Activity activity, @NonNull View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+
+    //region edit text
     @Override
     public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
-        CalendarMemo calendarMemo = CalendarRealm.getCalendarMemo(realm, CalendarDay.today().getDate());
-
-        if (calendarMemo == null) {
-            CalendarRealm.saveCalenderMemo(realm, materialCalendarView.getSelectedDate().getDate(), textView.getText().toString());
-        } else {
-            CalendarRealm.editCalenderMemo(realm, calendarMemo, textView.getText().toString());
-        }
+        CalendarRealm.createOrUpdateCalendarMemo(realm, materialCalendarView.getSelectedDate().getDate(), textView.getText().toString());
         this.editText.setFocusable(false);
         return false;
     }
-    //endregion
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -144,9 +162,5 @@ public class CalendarFragment extends Fragment implements OnDateSelectedListener
         editText.setFocusableInTouchMode(true);
         return false;
     }
-
-    private void closedKeyboard(@NonNull Activity activity, @NonNull View view) {
-        InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
+    // endregion
 }

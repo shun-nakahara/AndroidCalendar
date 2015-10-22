@@ -1,4 +1,4 @@
-package shun.nakahara.androidcalendar;
+package shun.nakahara.androidcalendar.util;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,15 +11,30 @@ import io.realm.RealmQuery;
 import shun.nakahara.androidcalendar.model.CalendarMemo;
 
 /**
- * Created by shun_nakahara on 10/20/15.
+ * Realm で Calendar の日付に対して書き込んだメモを保存するための仲介クラス
+ *
+ * @see {@link CalendarMemo}
  *
  * @author shun_nakahara
  */
 public class CalendarRealm {
 
+    /**
+     * SsQLite (Realm) File Name
+     */
     private static final String CALENDAR_REALM_NAME = "calendar.realm";
+
+    /**
+     * SQLite schema version
+     */
     private static final int CALENDAR_SCHEMA_VERSION = 0;
 
+    /**
+     * Create Realm Instance
+     *
+     * @param context {@link Context}
+     * @return {@link Realm}
+     */
     public static Realm getRealm(@NonNull Context context) {
         RealmConfiguration.Builder builder = new RealmConfiguration.Builder(context);
         builder.name(CALENDAR_REALM_NAME);
@@ -28,7 +43,14 @@ public class CalendarRealm {
         return Realm.getInstance(realmConfiguration);
     }
 
-    public static void saveCalenderMemo(@NonNull Realm realm, @NonNull final Date date, @NonNull final String memo) {
+    /**
+     * Save Calendar Memo with date
+     *
+     * @param realm {@link Realm}
+     * @param date {@link Date}
+     * @param memo {@link String}
+     */
+    public static void saveCalendarMemo(@NonNull Realm realm, @NonNull final Date date, @NonNull final String memo) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -39,7 +61,14 @@ public class CalendarRealm {
         });
     }
 
-    public static void editCalenderMemo(@NonNull Realm realm, final CalendarMemo calendarMemo, final String memo) {
+    /**
+     * Update Calendar Memo
+     *
+     * @param realm {@link Realm}
+     * @param calendarMemo {@link CalendarMemo}
+     * @param memo {@link String}
+     */
+    public static void editCalendarMemo(@NonNull Realm realm, final CalendarMemo calendarMemo, final String memo) {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -48,9 +77,25 @@ public class CalendarRealm {
         });
     }
 
+    /**
+     * Get Calendar Memo Model
+     *
+     * @param realm {@link Realm}
+     * @param date {@link Date} 取得したいメモの日付
+     * @return {@link CalendarMemo}
+     */
     public static CalendarMemo getCalendarMemo(@NonNull Realm realm, @NonNull Date date) {
         RealmQuery<CalendarMemo> memoRealmQuery = realm.where(CalendarMemo.class);
         memoRealmQuery.equalTo("date", date);
         return memoRealmQuery.findFirst();
+    }
+
+    public static void createOrUpdateCalendarMemo(@NonNull Realm realm, @NonNull Date date, @NonNull String memo) {
+        CalendarMemo calendarMemo = getCalendarMemo(realm, date);
+        if (calendarMemo == null) {
+            saveCalendarMemo(realm, date, memo);
+        } else {
+            editCalendarMemo(realm, calendarMemo, memo);
+        }
     }
 }

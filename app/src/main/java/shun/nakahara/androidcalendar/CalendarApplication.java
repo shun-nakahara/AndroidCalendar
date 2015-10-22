@@ -26,6 +26,12 @@ public class CalendarApplication extends Application {
         this.refWatcher = LeakCanary.install(this);
     }
 
+    /**
+     *  メモリーリークを監視するためのメソッドです
+     *
+     *  @param watchedReference {@link Fragment} メモリーリークを確認する {@link Fragment} を指定します。
+     *
+     */
     public static void watch(@NonNull Fragment watchedReference) {
         Activity activity = watchedReference.getActivity();
         if (activity != null) {

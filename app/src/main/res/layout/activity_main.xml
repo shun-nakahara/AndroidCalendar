@@ -9,6 +9,6 @@
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="shun.nakahara.androidcalendar.CalendarFragment"
+        android:name="shun.nakahara.androidcalendar.calendar.fragment.CalendarFragment"
         android:id="@+id/fragment"/>
 </RelativeLayout>
