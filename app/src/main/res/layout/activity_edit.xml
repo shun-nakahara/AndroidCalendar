@@ -9,9 +9,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".EditActivity">
 
-    <fragment
+    <fragment xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/edit_fragment"
         android:name="shun.nakahara.androidcalendar.edite.fragment.EditFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:layout="@layout/fragment_edit" />
+
 </android.support.design.widget.CoordinatorLayout>

@@ -25,9 +25,8 @@ import shun.nakahara.androidcalendar.util.CalendarRealm;
 
 /**
  * A simple {@link Fragment} subclass.
- *
+ * <p/>
  * 編集ページの画面ロジックを書いています。
- *
  */
 public class EditFragment extends Fragment implements View.OnKeyListener {
 
@@ -48,13 +47,6 @@ public class EditFragment extends Fragment implements View.OnKeyListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_edit, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        ButterKnife.bind(this, view);
     }
 
     @Override

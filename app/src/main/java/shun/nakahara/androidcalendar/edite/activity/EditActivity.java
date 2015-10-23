@@ -27,7 +27,7 @@ public class EditActivity extends AppCompatActivity {
     /**
      * start activity and milliseconds in to extra
      *
-     * @param fragment {@link Fragment}
+     * @param fragment     {@link Fragment}
      * @param milliseconds long
      */
     public static void startActivity(Fragment fragment, long milliseconds) {
@@ -37,7 +37,7 @@ public class EditActivity extends AppCompatActivity {
     /**
      * start activity and milliseconds in to extra
      *
-     * @param activity {@link Activity}
+     * @param activity     {@link Activity}
      * @param milliseconds long
      */
     public static void startActivity(Activity activity, long milliseconds) {
